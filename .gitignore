@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+
+.vscode/
+.DS_Store
+*.log
+
+.next/
+node_modules/
