@@ -22,10 +22,10 @@ export function LineChart() {
       const padding = 22;
       const bounds = { x: padding, y: 10, width: width - padding * 2, height: height - 30 };
 
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#10112e';
       ctx.fillRect(0, 0, width, height);
 
-      ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+      ctx.strokeStyle = 'rgba(167, 151, 255, 0.18)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let i = 0; i <= 4; i++) {
@@ -48,11 +48,11 @@ export function LineChart() {
       const scale = { minX, maxX: Math.max(maxX, minX + 1), minY, maxY };
 
       renderCanvasLineChart(ctx, chartData, bounds, scale, {
-        strokeColor: '#22d3ee',
+        strokeColor: '#6ee7ff',
         lineWidth: 2.2,
         showArea: true,
-        areaColorTop: 'rgba(34, 211, 238, 0.38)',
-        areaColorBottom: 'rgba(34, 211, 238, 0.02)',
+        areaColorTop: 'rgba(110, 231, 255, 0.38)',
+        areaColorBottom: 'rgba(110, 231, 255, 0.02)',
       });
 
       ctx.fillStyle = '#94a3b8';

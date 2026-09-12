@@ -16,7 +16,7 @@ export function BarChart() {
       const start = performance.now();
       const padding = 22;
       const bounds = { x: padding, y: 10, width: width - padding * 2, height: height - 32 };
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#10112e';
       ctx.fillRect(0, 0, width, height);
 
       if (buckets.length === 0) {
@@ -29,7 +29,7 @@ export function BarChart() {
       const maxY = 1000;
       const scale = { minX: 0, maxX: buckets.length, minY, maxY };
 
-      renderCanvasBarChart(ctx, buckets, bounds, scale, { barColor: '#10b981' });
+      renderCanvasBarChart(ctx, buckets, bounds, scale, { barColor: '#9b8cff' });
       ctx.fillStyle = '#94a3b8';
       ctx.font = '12px sans-serif';
       ctx.fillText(`${buckets.length} buckets`, width - 92, 18);

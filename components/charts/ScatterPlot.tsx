@@ -16,7 +16,7 @@ export function ScatterPlot() {
       const start = performance.now();
       const padding = 22;
       const bounds = { x: padding, y: 16, width: width - padding * 2, height: height - 38 };
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#10112e';
       ctx.fillRect(0, 0, width, height);
 
       if (data.length === 0) {

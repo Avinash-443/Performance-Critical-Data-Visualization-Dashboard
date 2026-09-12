@@ -13,7 +13,7 @@ export function Heatmap() {
       const start = performance.now();
       const padding = 12;
       const bounds = { x: padding, y: padding, width: width - padding * 2, height: height - padding * 2 };
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#10112e';
       ctx.fillRect(0, 0, width, height);
 
       if (!heatmapData.matrix.length) {

@@ -23,16 +23,16 @@ export function TimeRangeSelector() {
   const { filterState, setTimeRange, setAggregation, setPointLimit, setStreamSpeed } = useData();
 
   return (
-    <div className="flex flex-col gap-4 xl:items-end">
+    <div className="range-controls flex flex-col gap-4 xl:items-end">
       <div className="flex flex-wrap items-center gap-2">
         {timeRangeOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => setTimeRange(option.value)}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+            className={`range-button rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
               filterState.timeRange === option.value
-                ? 'border-cyan-400 bg-cyan-500/15 text-cyan-300'
-                : 'border-slate-700 bg-slate-900/80 text-slate-400 hover:text-slate-200'
+                ? 'range-button-active'
+                : 'range-button-idle'
             }`}
           >
             {option.label}
@@ -46,7 +46,7 @@ export function TimeRangeSelector() {
           <select
             value={filterState.aggregation}
             onChange={(e) => setAggregation(e.target.value as AggregationPeriod)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-sm text-slate-200"
+            className="range-select rounded-lg px-2 py-1.5 text-sm"
           >
             {aggregationOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -59,7 +59,7 @@ export function TimeRangeSelector() {
           <select
             value={filterState.pointLimit}
             onChange={(e) => setPointLimit(Number(e.target.value))}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-sm text-slate-200"
+            className="range-select rounded-lg px-2 py-1.5 text-sm"
           >
             <option value={5000}>5k</option>
             <option value={10000}>10k</option>
@@ -73,7 +73,7 @@ export function TimeRangeSelector() {
           <select
             value={filterState.streamSpeed}
             onChange={(e) => setStreamSpeed(Number(e.target.value))}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-sm text-slate-200"
+            className="range-select rounded-lg px-2 py-1.5 text-sm"
           >
             <option value={50}>50ms</option>
             <option value={100}>100ms</option>
