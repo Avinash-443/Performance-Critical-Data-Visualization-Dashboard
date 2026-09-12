@@ -76,6 +76,7 @@ export function useChartRenderer({
     const now = performance.now();
     const frameBudgetMs = 1000 / 24;
     if (now - lastRenderAtRef.current < frameBudgetMs) {
+      animFrameIdRef.current = requestAnimationFrame(render);
       return;
     }
     lastRenderAtRef.current = now;

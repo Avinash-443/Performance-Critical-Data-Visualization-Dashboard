@@ -3,12 +3,16 @@
 import { useMemo } from 'react';
 import { useData } from '@/components/providers/DataProvider';
 import { useChartRenderer } from '@/hooks/useChartRenderer';
+import { aggregateDataPoints } from '@/lib/dataGenerator';
 import { renderCanvasBarChart } from '@/lib/canvasUtils';
 
 export function BarChart() {
-  const { aggregatedBuckets, recordRenderTime } = useData();
+  const { aggregatedBuckets, filteredData, recordRenderTime } = useData();
 
-  const buckets = useMemo(() => aggregatedBuckets.slice(-36), [aggregatedBuckets]);
+  const buckets = useMemo(() => {
+    if (aggregatedBuckets.length > 0) return aggregatedBuckets.slice(-36);
+    return aggregateDataPoints(filteredData, '1min').slice(-36);
+  }, [aggregatedBuckets, filteredData]);
 
   const { canvasRef, containerRef } = useChartRenderer({
     dependencies: [buckets],
@@ -24,7 +28,6 @@ export function BarChart() {
         return;
       }
 
-      const values = buckets.map((b) => b.avgValue);
       const minY = 0;
       const maxY = 1000;
       const scale = { minX: 0, maxX: buckets.length, minY, maxY };

@@ -15,6 +15,39 @@ interface UseDataStreamOptions {
   aggregationPeriod?: AggregationPeriod;
 }
 
+function buildHeatmapData(points: DataPoint[]) {
+  const rows = 7;
+  const cols = 24;
+  const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const counts = Array.from({ length: rows }, () => new Array(cols).fill(0));
+
+  for (const point of points) {
+    const date = new Date(point.timestamp);
+    const row = date.getDay() % rows;
+    const col = date.getHours() % cols;
+    matrix[row][col] += point.value;
+    counts[row][col]++;
+  }
+
+  let minVal = Infinity;
+  let maxVal = -Infinity;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      matrix[row][col] = counts[row][col]
+        ? Math.round(matrix[row][col] / counts[row][col])
+        : 0;
+      minVal = Math.min(minVal, matrix[row][col]);
+      maxVal = Math.max(maxVal, matrix[row][col]);
+    }
+  }
+
+  return {
+    matrix,
+    minVal: minVal === Infinity ? 0 : minVal,
+    maxVal: maxVal === -Infinity ? 1000 : maxVal,
+  };
+}
+
 export function useDataStream({
   initialData = [],
   defaultCapacity = 10000,
@@ -79,22 +112,19 @@ export function useDataStream({
   // Request worker aggregation when data or period changes
   const updateWorkerCalculations = useCallback(
     (currentPoints: DataPoint[], period: AggregationPeriod) => {
+      const displayPeriod: AggregationPeriod = period === 'raw' ? '1min' : period;
       if (workerRef.current) {
-        if (period !== 'raw') {
-          workerRef.current.postMessage({
-            type: 'AGGREGATE',
-            payload: { points: currentPoints, period },
-          });
-        }
+        workerRef.current.postMessage({
+          type: 'AGGREGATE',
+          payload: { points: currentPoints, period: displayPeriod },
+        });
         workerRef.current.postMessage({
           type: 'HEATMAP_MATRIX',
           payload: { points: currentPoints, rows: 7, cols: 24 },
         });
       } else {
-        // Fallback for environments without worker
-        if (period !== 'raw') {
-          setAggregatedBuckets(aggregateDataPoints(currentPoints, period));
-        }
+        setAggregatedBuckets(aggregateDataPoints(currentPoints, displayPeriod));
+        setHeatmapData(buildHeatmapData(currentPoints));
       }
     },
     []
@@ -103,6 +133,9 @@ export function useDataStream({
   // Initial calculation
   useEffect(() => {
     if (data.length > 0) {
+      const displayPeriod: AggregationPeriod = aggregationPeriod === 'raw' ? '1min' : aggregationPeriod;
+      setAggregatedBuckets(aggregateDataPoints(data, displayPeriod));
+      setHeatmapData(buildHeatmapData(data));
       updateWorkerCalculations(data, aggregationPeriod);
     }
   }, [aggregationPeriod]);
@@ -145,6 +178,9 @@ export function useDataStream({
   const toggleStreaming = useCallback(() => setIsStreaming((prev) => !prev), []);
   const resetData = useCallback((newPoints: DataPoint[]) => {
     setData(newPoints);
+    const displayPeriod: AggregationPeriod = aggregationPeriod === 'raw' ? '1min' : aggregationPeriod;
+    setAggregatedBuckets(aggregateDataPoints(newPoints, displayPeriod));
+    setHeatmapData(buildHeatmapData(newPoints));
     updateWorkerCalculations(newPoints, aggregationPeriod);
   }, [aggregationPeriod, updateWorkerCalculations]);
 
